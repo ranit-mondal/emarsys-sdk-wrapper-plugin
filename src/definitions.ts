@@ -96,5 +96,5 @@ export interface EmarsysSDKCustomPlugin {
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
 
 // --------------------------
-
+loadMessageInboxHandler():Promise<any>;
 }
