@@ -347,4 +347,52 @@ public class EmarsysSDKCustomPlugin extends Plugin {
         }
         return null;
     }
+     @PluginMethod
+    public void loadMessageInboxHandler(PluginCall call) {
+    JSONArray messagesArray = new JSONArray();
+
+    Emarsys.getMessageInbox().fetchMessages(result -> {
+      if (result.getResult() != null) {
+        InboxResult inboxResult = result.getResult();
+        List<Message> messages = inboxResult.getMessages();
+        for (Message message : messages) {
+          JSONObject messageJson = new JSONObject();
+
+          try {
+            messageJson.put("id", message.getId());        // Add message ID
+            messageJson.put("title", message.getTitle());  // Add message title
+            messageJson.put("campaignId", message.getCampaignId()); // Add Campaign Id
+            messageJson.put("body", message.getBody()); // Add Body
+            messageJson.put("tags", message.getTags()); // Add Tags
+            messageJson.put("properties", message.getProperties()); // Add Properties
+            messageJson.put("receivedAt", message.getReceivedAt()); // Add ReceivedAt
+
+
+            if(message.getActions() != null && !message.getActions().isEmpty()){
+              for (ActionModel action : message.getActions()) {
+                JSONObject actionJSON = new JSONObject();
+                try {
+                  String title = extractValue(String.valueOf(action), "title");
+                  String payload = extractValue(String.valueOf(action), "url");
+                  messageJson.put("buttonname", title);
+                  messageJson.put("action", payload.toString());
+                }catch (JSONException e) {
+                  throw new RuntimeException(e);
+                }
+                break;
+              }
+            }
+
+          } catch (JSONException e) {
+            throw new RuntimeException(e);
+          }
+          messagesArray.put(messageJson);               // Add to JSONArray
+        }
+        JSObject resultJson = new JSObject();
+        resultJson.put("campaignMessages", messagesArray);
+       
+        call.resolve(resultJson);
+      }
+    });
+  }
 }
