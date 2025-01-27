@@ -13,6 +13,11 @@ import androidx.core.app.NotificationCompat;
 import com.emarsys.Emarsys;
 import com.emarsys.config.EmarsysConfig;
 import com.emarsys.inapp.ui.InlineInAppView;
+import com.emarsys.mobileengage.api.action.ActionModel;
+import com.emarsys.mobileengage.api.action.AppEventActionModel;
+import com.emarsys.mobileengage.api.action.CustomEventActionModel;
+import com.emarsys.mobileengage.api.inbox.InboxResult;
+import com.emarsys.mobileengage.api.inbox.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getcapacitor.Bridge;
 import com.getcapacitor.JSObject;
@@ -24,6 +29,7 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -347,6 +353,19 @@ public class EmarsysSDKCustomPlugin extends Plugin {
         }
         return null;
     }
+
+  private static String extractValue(String input, String key) {
+    String pattern = key + "=(.*?)(,|$)";
+    // Use regular expressions to extract the value of the key
+    java.util.regex.Pattern regex = java.util.regex.Pattern.compile(pattern);
+    java.util.regex.Matcher matcher = regex.matcher(input);
+
+    if (matcher.find()) {
+      return matcher.group(1).trim();
+    }
+    return null;
+  }
+
      @PluginMethod
     public void loadMessageInboxHandler(PluginCall call) {
     JSONArray messagesArray = new JSONArray();
@@ -390,7 +409,8 @@ public class EmarsysSDKCustomPlugin extends Plugin {
         }
         JSObject resultJson = new JSObject();
         resultJson.put("campaignMessages", messagesArray);
-       
+        System.out.println("campaignMessages"+messagesArray);
+
         call.resolve(resultJson);
       }
     });
