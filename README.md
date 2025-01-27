@@ -54,6 +54,7 @@ npm run prepublishOnly && npm run deploy
 * [`addListener('EmarsysPushDeepLink', ...)`](#addlisteneremarsyspushdeeplink)
 * [`addListener('EmarsysPushApplicationEvent', ...)`](#addlisteneremarsyspushapplicationevent)
 * [`addListener('EmarsysPushNotificationReceived', ...)`](#addlisteneremarsyspushnotificationreceived)
+* [`loadMessageInboxHandler()`](#loadmessageinboxhandler)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 
@@ -375,6 +376,17 @@ addListener(eventName: 'EmarsysPushNotificationReceived', listenerFunc: (event: 
 | **`listenerFunc`** | <code>(event: <a href="#pushmessageevent">PushMessageEvent</a>) =&gt; void</code> |
 
 **Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+
+--------------------
+
+
+### loadMessageInboxHandler()
+
+```typescript
+loadMessageInboxHandler() => Promise<any>
+```
+
+**Returns:** <code>Promise&lt;any&gt;</code>
 
 --------------------
 
