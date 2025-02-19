@@ -348,6 +348,65 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
     @objc func getSdkVersion(_ call: CAPPluginCall) {
         configHandler.getSdkVersion(call);
     }
+
+    public class YourPlugin: CAPPlugin {
+    
+    @objc func loadMessageInboxHandler(_ call: CAPPluginCall) {
+        var messagesArray: [[String: Any]] = []
+
+        Emarsys.inbox.fetchMessages { result in
+            if let inboxResult = result.result {
+                let messages = inboxResult.messages
+
+                for message in messages {
+                    var messageDict: [String: Any] = [
+                        "id": message.id,
+                        "title": message.title,
+                        "campaignId": message.campaignId,
+                        "body": message.body,
+                        "tags": message.tags,
+                        "properties": message.properties,
+                        "receivedAt": message.receivedAt
+                    ]
+
+                    if let actions = message.actions, !actions.isEmpty {
+                        if let firstAction = actions.first {
+                            let title = self.extractValue(from: firstAction, key: "title")
+                            let payload = self.extractValue(from: firstAction, key: "url")
+
+                            messageDict["buttonname"] = title
+                            messageDict["action"] = payload
+                        }
+                    }
+
+                    messagesArray.append(messageDict)
+                }
+
+                let resultJson: [String: Any] = ["campaignMessages": messagesArray]
+                call.resolve(resultJson)
+            } else {
+                call.reject("Failed to fetch messages")
+            }
+        }
+    }
+
+
+    private func extractValue(input: String, key: String) -> String? {
+    let pattern = "\(key)=(.*?)(,|$)"
+    
+    do {
+        let regex = try NSRegularExpression(pattern: pattern, options: [])
+        if let match = regex.firstMatch(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count)) {
+            if let range = Range(match.range(at: 1), in: input) {
+                return String(input[range]).trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+        }
+    } catch {
+        print("Regex error: \(error)")
+    }
+    
+    return nil
+}
     
     // Helper
     
