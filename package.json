@@ -1,6 +1,6 @@
 {
   "name": "@ranit-mondal/emarsys-sdk-wrapper-plugin",
-  "version": "1.1.16",
+  "version": "1.1.23",
   "description": "Custom Capacitor Plugin To have communication with Emarsys SDK",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
