@@ -349,7 +349,7 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
         configHandler.getSdkVersion(call);
     }
 
-    public class YourPlugin: CAPPlugin {
+
     
     @objc func loadMessageInboxHandler(_ call: CAPPluginCall) {
         var messagesArray: [[String: Any]] = []
